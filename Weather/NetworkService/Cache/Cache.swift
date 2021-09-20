@@ -25,47 +25,58 @@ private extension Cache {
     
     final class Entry {
         let value: Value
-        let expirationDate: Date
+        let expirationDate: Date?
 
-        init(value: Value, expirationDate: Date) {
+        init(value: Value, expirationDate: Date? = nil) {
             self.value = value
             self.expirationDate = expirationDate
         }
     }
 }
-
+enum CacheType {
+    case expirable(TimeInterval)
+    case system
+}
 
 
 final class Cache<Key: Hashable, Value> {
-    private let wrapped = NSCache<WrappedKey, Entry>()
-    private let dateProvider: () -> Date
-    private let entryLifetime: TimeInterval
-    init(dateProvider: @escaping () -> Date = Date.init,
-         entryLifetime: TimeInterval = 12 * 60 * 60) {
-        self.dateProvider = dateProvider
-        self.entryLifetime = entryLifetime
+    private let cacheType: CacheType
+    private let cache = NSCache<WrappedKey, Entry>()
+    private let currentDate: (() -> Date)
+    init(_ type: CacheType,
+         currentDate: @escaping (() -> Date) = Date.init) {
+        self.cacheType = type
+        self.currentDate = currentDate
     }
     func insert(_ value: Value, forKey key: Key) {
-        let date = dateProvider().addingTimeInterval(entryLifetime)
-        let entry = Entry(value: value, expirationDate: date)
-        wrapped.setObject(entry, forKey: WrappedKey(key))
+        switch self.cacheType {
+        case .expirable(let expireTime):
+            let date = currentDate().addingTimeInterval(expireTime)
+            let entry = Entry(value: value, expirationDate: date)
+            cache.setObject(entry, forKey: WrappedKey(key))
+        case .system:
+            cache.setObject(Entry(value: value), forKey: WrappedKey(key))
+        }
     }
     
     func value(forKey key: Key) -> Value? {
-        guard let entry = wrapped.object(forKey: WrappedKey(key)) else {
+        guard let entry = cache.object(forKey: WrappedKey(key)) else {
             return nil
         }
-        
-        guard dateProvider() < entry.expirationDate else {
-            // Discard values that have expired
-            removeValue(forKey: key)
-            return nil
+        switch self.cacheType {
+        case .expirable:
+            guard let expirationDate = entry.expirationDate,
+                  currentDate() < expirationDate else {
+                removeValue(forKey: key)
+                return nil
+            }
+        case .system:
+            return entry.value
         }
-        
-        return entry.value
+        return nil
     }
     
     func removeValue(forKey key: Key) {
-        wrapped.removeObject(forKey: WrappedKey(key))
+        cache.removeObject(forKey: WrappedKey(key))
     }
 }
