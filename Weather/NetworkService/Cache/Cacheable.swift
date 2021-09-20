@@ -20,8 +20,8 @@ public struct URLResponseCache: Cacheable{
     private let cache: Cache<URLRequest,Decodable>
     
     init(dateProvider: @escaping () -> Date = Date.init, lifeTime:TimeInterval) {
-        cache = Cache<URLRequest,Decodable>(dateProvider: dateProvider,
-                                          entryLifetime: lifeTime)
+        cache = Cache<URLRequest,Decodable>(.expirable(lifeTime),
+                                            currentDate: dateProvider)
     }
     
     public func setObject<T:Decodable>(_ object: T, forKey key: URLRequest) {

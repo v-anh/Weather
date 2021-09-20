@@ -88,17 +88,16 @@ extension WeatherViewController {
         print("Update view with state: \(state)")
         switch state {
         case .empty:
-            break
+            self.updateDataSource([])
         case .loaded(let weatherList):
-            DispatchQueue.main.async {
-                var snapshot = NSDiffableDataSourceSnapshot<WeatherSection, WeatherFactor>()
-                snapshot.appendSections(WeatherSection.allCases)
-                snapshot.appendItems(weatherList, toSection: .list)
-                self.dataSource.apply(snapshot, animatingDifferences: true)
-            }
+            self.updateDataSource(weatherList)
         case .loading:
             break;
-        case .haveError(_):
+        case .haveError(let error):
+            let alert = UIAlertController(title: "Can't load search results!", message: error.localizedDescription, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
+
+            self.present(alert, animated: false, completion: nil)
             break;
         }
     }
@@ -115,12 +114,20 @@ extension WeatherViewController {
             cellProvider: {  tableView, indexPath, wetherFactor in
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier) as? WeatherTableViewCell else {
                     fatalError("Can not dequeue \(WeatherTableViewCell.self)!")
-                    return UITableViewCell()
                 }
                 cell.bindModel(wetherFactor)
                 return cell
             }
         )
+    }
+    
+    func updateDataSource(_ weatherList: [WeatherFactor]) {
+        DispatchQueue.main.async {
+            var snapshot = NSDiffableDataSourceSnapshot<WeatherSection, WeatherFactor>()
+            snapshot.appendSections(WeatherSection.allCases)
+            snapshot.appendItems(weatherList, toSection: .list)
+            self.dataSource.apply(snapshot, animatingDifferences: true)
+        }
     }
 }
 

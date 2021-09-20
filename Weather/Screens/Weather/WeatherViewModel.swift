@@ -42,11 +42,11 @@ struct WeatherConfig: WeatherConfigType {
 final class WeatherViewModel: WeatherViewModelType {
     
     let service: WeatherServiceType
-    let config: WeatherConfig
+    let config: WeatherConfigType
     
     private var cancellable = Set<AnyCancellable>()
     init(service: WeatherServiceType,
-         config: WeatherConfig) {
+         config: WeatherConfigType) {
         self.service = service
         self.config = config
     }
@@ -63,7 +63,12 @@ final class WeatherViewModel: WeatherViewModelType {
             }
             .map(weatherResultTranform(_:))
             .eraseToAnyPublisher()
-        let weatherState = Publishers.Merge(initialState, searchResult).eraseToAnyPublisher()
+        
+        let emptySearchInput = input.search
+            .filter(\.isEmpty)
+            .map{ _ in SearchWeatherState.empty}
+        
+        let weatherState = Publishers.Merge3(initialState,emptySearchInput,searchResult).eraseToAnyPublisher()
         return WeatherViewModelOutput(weatherSearchOutput: weatherState)
     }
 }

@@ -33,4 +33,12 @@ enum APIEnvironment: EnvironmentProtocol {
             return "60c6fbeb4b93ac653c492ba806fc346d"
         }
     }
+    
+    
+    var weatherIconUrl:String {
+        switch self {
+        case .development:
+            return "http://openweathermap.org/img/w/"
+        }
+    }
 }
