@@ -8,7 +8,10 @@
 import UIKit
 import Combine
 
-class WeatherViewController: UIViewController {
+class WeatherViewController: BaseViewController {
+    
+    private typealias DataSource = UITableViewDiffableDataSource<WeatherViewModel.WeatherSection, WeatherDisplayModel>
+    private typealias Snapshot = NSDiffableDataSourceSnapshot<WeatherViewModel.WeatherSection, WeatherDisplayModel>
 
     private var cancellable = Set<AnyCancellable>()
     private let viewModel: WeatherViewModelType
@@ -17,18 +20,14 @@ class WeatherViewController: UIViewController {
     private lazy var searchController: UISearchController = {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.tintColor = .label
         searchController.searchBar.delegate = self
         return searchController
     }()
     
-    private lazy var dataSource = makeDataSource()
+    private lazy var dataSource = configdataSource()
     @IBOutlet weak var tableView: UITableView!
-    //    lazy var tableView: UITableView = {
-//        let tableView = UITableView(frame: .zero)
-//        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: "WeatherTableViewCell")
-//        return tableView
-//    }()
     
     init(viewModel: WeatherViewModelType) {
         self.viewModel = viewModel
@@ -53,22 +52,9 @@ class WeatherViewController: UIViewController {
 
 extension WeatherViewController {
     func renderUI() {
-//        view.backgroundColor = .white
-//        view.addSubview(tableView)
-//        tableView.translatesAutoresizingMaskIntoConstraints = false
-//        view.translatesAutoresizingMaskIntoConstraints = false
-//        let constraints = [
-//            NSLayoutConstraint(item: tableView, attribute: .top, relatedBy: .equal, toItem: view, attribute: .top, multiplier: 1.0, constant: 0),
-//            NSLayoutConstraint(item: tableView, attribute: .left, relatedBy: .equal, toItem: view, attribute: .left, multiplier: 1.0, constant: 0),
-//            NSLayoutConstraint(item: tableView, attribute: .right, relatedBy: .equal, toItem: view, attribute: .right, multiplier: 1.0, constant: 0),
-//            NSLayoutConstraint(item: tableView, attribute: .bottom, relatedBy: .equal, toItem: view, attribute: .bottom, multiplier: 1.0, constant: 0),
-//        ]
-//        NSLayoutConstraint.activate(constraints)
-        tableView.register(UINib(nibName: "WeatherTableViewCell", bundle: nil), forCellReuseIdentifier: "WeatherTableViewCell")
-        tableView.tableFooterView = UIView()
-        tableView.dataSource = dataSource
-        navigationItem.searchController = self.searchController
-        searchController.isActive = true
+        self.title = "Weather Forecast"
+        setupTableView()
+        setupSearchUI()
     }
     
     func bindViewModel(_ viewModel: WeatherViewModelType) {
@@ -89,27 +75,31 @@ extension WeatherViewController {
         switch state {
         case .empty:
             self.updateDataSource([])
+            self.finishLoading()
         case .loaded(let weatherList):
+            self.finishLoading()
             self.updateDataSource(weatherList)
         case .loading:
+            self.startLoading()
             break;
         case .haveError(let error):
-            let alert = UIAlertController(title: "Can't load search results!", message: error.localizedDescription, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: nil))
-
-            self.present(alert, animated: false, completion: nil)
-            break;
+            self.finishLoading()
+            self.showError(error)
         }
     }
 }
 
-enum WeatherSection: CaseIterable {
-    case list
-}
 
+//MARK: - Weather Tableview
 extension WeatherViewController {
-    func makeDataSource() -> UITableViewDiffableDataSource<WeatherSection, WeatherFactor> {
-        return UITableViewDiffableDataSource(
+    private func setupTableView() {
+        tableView.tableFooterView = UIView()
+        tableView.dataSource = dataSource
+        tableView.register(UINib(nibName: WeatherTableViewCell.className, bundle: nil), forCellReuseIdentifier: WeatherTableViewCell.identifier)
+    }
+    
+    private func configdataSource() -> DataSource {
+        return DataSource(
             tableView: tableView,
             cellProvider: {  tableView, indexPath, wetherFactor in
                 guard let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier) as? WeatherTableViewCell else {
@@ -121,17 +111,22 @@ extension WeatherViewController {
         )
     }
     
-    func updateDataSource(_ weatherList: [WeatherFactor]) {
-        DispatchQueue.main.async {
-            var snapshot = NSDiffableDataSourceSnapshot<WeatherSection, WeatherFactor>()
-            snapshot.appendSections(WeatherSection.allCases)
-            snapshot.appendItems(weatherList, toSection: .list)
-            self.dataSource.apply(snapshot, animatingDifferences: true)
-        }
+    private func updateDataSource(_ weatherList: [WeatherDisplayModel]) {
+        var snapshot = Snapshot()
+        snapshot.appendSections([.weatherList])
+        snapshot.appendItems(weatherList, toSection: .weatherList)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
 }
 
+
+//MARK: Search Bar
 extension WeatherViewController: UISearchBarDelegate {
+    private func setupSearchUI() {
+        searchController.isActive = true
+        navigationItem.searchController = self.searchController
+    }
+    
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         search.send(searchText)
     }

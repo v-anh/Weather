@@ -23,12 +23,17 @@ class WeatherTableViewCell: UITableViewCell {
     @IBOutlet weak var descriptionValue: UILabel!
     @IBOutlet weak var weatherIcon: UIImageView!
     
+    private lazy var dateFormatter: DateFormatter =  {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "E, d MMM y"
+        return dateFormatter
+    }()
     
     private var cancellable: AnyCancellable?
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        self.setupUI()
     }
     
     override func prepareForReuse() {
@@ -43,19 +48,30 @@ class WeatherTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func bindModel(_ model: WeatherFactor) {
-        if let weather = model.weather?.first {
-            let url = "https://openweathermap.org/img/w/\(weather.icon).png"
-            cancellable = ImageLoader.shared.loadImage(from: URL(string: url)!, size: weatherIcon.frame.size).sink { [weak self] image in
+    func setupUI() {
+        dateTitle.text = "Date:"
+        tempTitle.text = "Average Temperature:"
+        presureTitle.text = "Pressure:"
+        humidityTitle.text = "Humidity:"
+        descriptionTitle.text = "Description:"
+
+    }
+    
+    func bindModel(_ model: WeatherDisplayModel) {
+        cancellable = ImageLoader.shared.loadImage(from: model.iconUrl,
+                                                   size: weatherIcon.frame.size)
+            .sink { [weak self] image in
                 guard let self = self,
                       let image = image else {
                     return
                 }
                 self.weatherIcon.image = image
             }
-        }
-        tempValue.text = "\(model.temp?.eve ?? 0)"
-        descriptionValue.text = model.weather?.first?.weatherDescription ?? ""
+        tempValue.text = "\(model.averageTemp)"
+        dateTitle.text = dateFormatter.string(from: Date(timeIntervalSince1970: model.date))
+        presureValue.text = "\(model.pressure)"
+        humidityValue.text = "\(model.pressure)%"
+        descriptionValue.text = model.description
         
     }
     

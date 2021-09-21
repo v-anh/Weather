@@ -7,20 +7,20 @@
 
 import Foundation
 public struct WeatherResponseModel:Codable {
-    let cod: String
-    let message: Double
-    let cnt: Int
-    let city: City
-    let list:[WeatherFactor]
+    let cod: String?
+    let message: Double?
+    let cnt: Int?
+    let city: City?
+    let list:[WeatherFactor]?
 }
 
 public struct City:Codable {
-    let id: Double
-    let name: String
+    let id: Double?
+    let name: String?
 }
 
 public struct WeatherFactor:Codable {
-    let dt: Double?
+    let dt: TimeInterval?
     let sunrise: Double?
     let sunset: Double?
     let temp: Temp?
@@ -36,10 +36,10 @@ public struct WeatherFactor:Codable {
 }
 
 public struct Weather: Codable {
-    let id: Int
-    let main:String
-    let weatherDescription: String
-    let icon: String
+    let id: Int?
+    let main:String?
+    let weatherDescription: String?
+    let icon: String?
     private enum CodingKeys: String, CodingKey {
             case id,main,icon
             case weatherDescription = "description"
@@ -47,15 +47,5 @@ public struct Weather: Codable {
 }
 
 public struct Temp:Codable {
-    let eve:Float
-}
-
-extension WeatherFactor: Hashable {
-    public static func == (lhs: WeatherFactor, rhs: WeatherFactor) -> Bool {
-        return lhs.dt == rhs.dt
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(dt)
-    }
+    let eve:Float?
 }

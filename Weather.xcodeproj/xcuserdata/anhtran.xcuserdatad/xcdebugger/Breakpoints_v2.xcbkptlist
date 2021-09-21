@@ -7,79 +7,63 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "60BD16F3-606B-428B-9E3F-294B6CAA9E7D"
+            uuid = "139B282C-55E9-41AE-A773-EB22567A1529"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Weather/Screens/Weather/WeatherViewController.swift"
+            filePath = "Weather/NetworkService/URLSessionNetworkService/RequestType+URLSession.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "59"
-            endingLineNumber = "59"
-            landmarkName = "renderUI()"
+            startingLineNumber = "28"
+            endingLineNumber = "28"
+            landmarkName = "url(with:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "08FDC36B-AB8E-4168-A511-2A311A8B384C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Weather/Screens/Weather/WeatherViewController.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "71"
-            endingLineNumber = "71"
-            landmarkName = "renderUI()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9660FBC9-8CE4-41F2-ADC0-AD5709B211CB"
+            uuid = "12486C5B-EA63-4707-A4B8-A14905B3A5E5"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Weather/Screens/Weather/WeatherViewController.swift"
+            filePath = "Weather/Screens/Weather/WeatherViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "93"
-            endingLineNumber = "93"
-            landmarkName = "updateView(_:)"
+            startingLineNumber = "89"
+            endingLineNumber = "89"
+            landmarkName = "makeDisplayModels(_:)"
             landmarkType = "7">
             <Locations>
                <Location
-                  uuid = "9660FBC9-8CE4-41F2-ADC0-AD5709B211CB - f3dc24ae8f78d795"
+                  uuid = "12486C5B-EA63-4707-A4B8-A14905B3A5E5 - d98be0d2582a3393"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "Weather.WeatherViewController.updateView(Weather.SearchWeatherState) -&gt; ()"
+                  symbolName = "Weather.WeatherViewModel.(makeDisplayModels in _5EF74B5CA7D0F58717FA52A4F47E435F)(Swift.Optional&lt;Swift.Array&lt;Weather.WeatherFactor&gt;&gt;) -&gt; Swift.Array&lt;Weather.WeatherDisplayModel&gt;"
                   moduleName = "Weather"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/anhtran/Documents/My%20Files/Weather/Weather/Screens/Weather/WeatherViewController.swift"
+                  urlString = "file:///Users/anhtran/Documents/My%20Files/Weather/Weather/Screens/Weather/WeatherViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "93"
-                  endingLineNumber = "93"
-                  offsetFromSymbolStart = "838">
+                  startingLineNumber = "89"
+                  endingLineNumber = "89"
+                  offsetFromSymbolStart = "174">
                </Location>
                <Location
-                  uuid = "9660FBC9-8CE4-41F2-ADC0-AD5709B211CB - e4ef6e585298edf1"
+                  uuid = "12486C5B-EA63-4707-A4B8-A14905B3A5E5 - 8a117403fdabf188"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "closure #1 () -&gt; () in Weather.WeatherViewController.updateView(Weather.SearchWeatherState) -&gt; ()"
+                  symbolName = "closure #1 (Weather.WeatherFactor) -&gt; Swift.Optional&lt;Weather.WeatherDisplayModel&gt; in Weather.WeatherViewModel.(makeDisplayModels in _5EF74B5CA7D0F58717FA52A4F47E435F)(Swift.Optional&lt;Swift.Array&lt;Weather.WeatherFactor&gt;&gt;) -&gt; Swift.Array&lt;Weather.WeatherDisplayModel&gt;"
                   moduleName = "Weather"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/anhtran/Documents/My%20Files/Weather/Weather/Screens/Weather/WeatherViewController.swift"
+                  urlString = "file:///Users/anhtran/Documents/My%20Files/Weather/Weather/Screens/Weather/WeatherViewModel.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "94"
-                  endingLineNumber = "94"
-                  offsetFromSymbolStart = "130">
+                  startingLineNumber = "90"
+                  endingLineNumber = "90"
+                  offsetFromSymbolStart = "254">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -87,16 +71,32 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "CC98AF62-CB72-4E23-BCD1-38BC6489B158"
+            uuid = "15FAD06E-CB5A-429E-819F-D5DE648E5A39"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Weather/Screens/Weather/WeatherViewController.swift"
+            filePath = "Weather/Screens/Weather/WeatherViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "89"
-            endingLineNumber = "89"
-            landmarkName = "updateView(_:)"
+            startingLineNumber = "79"
+            endingLineNumber = "79"
+            landmarkName = "weatherResultTranform(_:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "6CEDDBCE-50A6-4E71-A961-644E0C7420AD"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Weather/Screens/Weather/WeatherViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "86"
+            endingLineNumber = "86"
+            landmarkName = "makeDisplayModels(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

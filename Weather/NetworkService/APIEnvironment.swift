@@ -6,9 +6,14 @@
 //
 
 import Foundation
+struct ApiConstants {
+    static let developmentAPIKey = "60c6fbeb4b93ac653c492ba806fc346d"
+    static let baseUrl = "https://api.openweathermap.org/"
+    static let imageUrl = "https://openweathermap.org/img/w/"
+}
+
 enum APIEnvironment: EnvironmentProtocol {
     
-    //https://api.openweathermap.org/data/2.5/forecast/daily?q=saigon&cnt=7&appid=60c6fbeb4b93ac653c492ba806fc346d&units=metric
     case development
     
     var headers: [String:String] {
@@ -23,17 +28,16 @@ enum APIEnvironment: EnvironmentProtocol {
     var baseURL: String {
         switch self {
         case .development:
-            return "https://api.openweathermap.org/"
+            return ApiConstants.baseUrl
         }
     }
     
     var apiKey: String {
         switch self {
         case .development:
-            return "60c6fbeb4b93ac653c492ba806fc346d"
+            return ApiConstants.developmentAPIKey
         }
     }
-    
     
     var weatherIconUrl:String {
         switch self {

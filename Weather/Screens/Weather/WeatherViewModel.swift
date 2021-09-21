@@ -8,14 +8,6 @@
 import Foundation
 import Combine
 
-
-enum SearchWeatherState {
-    case empty
-    case loading
-    case loaded([WeatherFactor])
-    case haveError(Error)
-}
-
 struct WeatherViewModelInput {
     let loadView: AnyPublisher<Void,Never>
     let search: AnyPublisher<String,Never>
@@ -41,6 +33,10 @@ struct WeatherConfig: WeatherConfigType {
 
 final class WeatherViewModel: WeatherViewModelType {
     
+    enum WeatherSection: CaseIterable {
+        case weatherList
+    }
+    
     let service: WeatherServiceType
     let config: WeatherConfigType
     
@@ -54,10 +50,12 @@ final class WeatherViewModel: WeatherViewModelType {
     
     func transform(input: WeatherViewModelInput) -> WeatherViewModelOutput {
         let initialState: AnyPublisher<SearchWeatherState,Never> = .just(.empty)
-        let searchResult = input.search
+        
+        let searchTerm = input.search
             .debounce(for: .milliseconds(300), scheduler: Scheduler.mainScheduler)
             .filter{$0.count > 3}
-            .removeDuplicates().flatMapLatest { [unowned self] searchTerm in
+
+        let searchResult = searchTerm.flatMapLatest { [unowned self] searchTerm in
                 self.service.getWeather(searchTerm: searchTerm,
                                         units: self.config.unit)
             }
@@ -75,12 +73,38 @@ final class WeatherViewModel: WeatherViewModelType {
 
 extension WeatherViewModel {
     private func weatherResultTranform(_ result: GetWeatherResult) -> SearchWeatherState {
-        
         switch result {
         case .success(let data):
-            return data.list.isEmpty ? .empty : .loaded(data.list)
+            let displayModels = makeDisplayModels(data.list)
+            return displayModels.isEmpty ? .empty : .loaded(displayModels)
         case .failure(let error):
             return .haveError(error)
+        }
+    }
+    
+    private func makeDisplayModels(_ weatherList: [WeatherFactor]?) -> [WeatherDisplayModel] {
+        guard let weatherList = weatherList,
+              !weatherList.isEmpty else {return []}
+        
+        return weatherList.compactMap { weatherfactor -> WeatherDisplayModel? in
+            guard let temp = weatherfactor.temp,
+                  let dt = weatherfactor.dt,
+                  let averageTemp = temp.eve,
+                  let pressure = weatherfactor.pressure,
+                  let humidity = weatherfactor.humidity,
+                  let weather = weatherfactor.weather?.first,
+                  let description = weather.weatherDescription,
+                  let icon = weather.icon,
+                  let url = URL.pngIconUrl(icon)
+            else {
+                return nil
+            }
+            return WeatherDisplayModel(date: dt,
+                                averageTemp: averageTemp,
+                                pressure: pressure,
+                                humidity: humidity,
+                                description: description,
+                                iconUrl: url)
         }
     }
 }
